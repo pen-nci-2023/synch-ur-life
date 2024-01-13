@@ -1,5 +1,6 @@
 {
-  "name": "life-ahead-app-v2",
+  "name": "synch-ur-life",
+  "type": "module",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
