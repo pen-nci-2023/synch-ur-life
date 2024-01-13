@@ -17,7 +17,7 @@ import {
           <Links />
         </head>
         <body>
-          <h1>Hello world!</h1>
+          <h1>Sync-Ur-Life</h1>
           <Outlet />
   
           <Scripts />
