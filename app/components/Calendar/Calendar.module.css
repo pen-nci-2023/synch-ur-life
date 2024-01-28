@@ -1,0 +1,31 @@
+/* app/components/Calendar/Calendar.module.css */
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+  }
+  
+  #calendar-container {
+    margin: 20px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+  }
+  
+  #calendar-header {
+    margin-bottom: 10px;
+    font-size: 24px;
+    font-weight: bold;
+  }
+  
+  #calendar {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr); /* 7 days in a week */
+    gap: 5px;
+  }
+  
+  .day {
+    padding: 10px;
+    border: 1px solid #ddd;
+    min-height: 50px;
+  }
+  
