@@ -1,5 +1,12 @@
 import React from 'react';
 
+
+// Test
+//document.body.style.backgroundColor = "lightblue"; // This should change the background color of the page
+
+// test 
+console.log("JavaScript loaded successfully.");
+
 const Calendar = ({ year, month }) => {
   const daysInMonth = new Date(year, month, 0).getDate();
   const firstDayOfWeek = new Date(year, month - 1, 1).getDay();
@@ -17,5 +24,6 @@ const Calendar = ({ year, month }) => {
     </div>
   );
 };
+
 
 export default Calendar;

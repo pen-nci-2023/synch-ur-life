@@ -29,3 +29,6 @@ body {
     min-height: 50px;
   }
   
+  body {
+    background-color: red !important; /* Use !important to ensure the style applies */
+  }
