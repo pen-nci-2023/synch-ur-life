@@ -45,11 +45,25 @@ const Calendar = ({ year, month }) => {
   );
 };
 
+
+const TaskManager = () => {
+  // Component logic and state management will go here
+
+  return (
+    <View style={styles.container}>
+      <Text style={styles.title}>Task Manager</Text>
+      {/* Additional UI elements for managing tasks will go here */}
+    </View>
+  );
+};
+
+
 const App = () => {
   return (
     <View style={styles.appContainer}>
       <Text style={styles.appTitle}>Sync-Ur-Life</Text>
       <Calendar year={2024} month={1} />
+      <TaskManager />
     </View>
   );
 };
@@ -88,6 +102,25 @@ const styles = StyleSheet.create({
     borderColor: '#ddd',
     alignItems: 'center',
   },
+  
+  // ------------------------
+  //|TaskManager Component style
+  //|
+    container: {
+      // Styles for your Task Manager container
+      padding: 20,
+      margin: 20,
+      borderWidth: 1,
+      borderColor: '#ddd',
+      borderRadius: 5,
+    },
+    title: {
+      // Styles for the Task Manager title
+      fontSize: 20,
+      fontWeight: 'bold',
+      marginBottom: 10,
+    },
+
 });
 
 export default App;
