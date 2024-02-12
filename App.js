@@ -1,3 +1,5 @@
+// App.js
+
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 
@@ -20,6 +22,14 @@ const Calendar = ({ year, month }) => {
     for (let day = 1; day <= daysInMonth; day++) {
       daysArray.push(<View key={`day-${day}`} style={styles.day}><Text>{day}</Text></View>);
     }
+    
+    // Add empty cells at the end to make up 7 cells per row
+    const totalCells = daysArray.length; // Total cells including days and starting empty cells
+    const cellsToAdd = (7 - (totalCells % 7)) % 7; // Calculate how many empty cells to add at the end
+    for (let i = 0; i < cellsToAdd; i++) {
+      daysArray.push(<View key={`empty-end-${i}`} style={styles.day}><Text></Text></View>); // Added empty cells at the end
+    }
+
 
     setCalendarDays(daysArray);
     console.log("END: CreateCalendar");
