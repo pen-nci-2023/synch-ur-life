@@ -1,20 +1,83 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet } from 'react-native';
 
-export default function App() {
+const Calendar = ({ year, month }) => {
+  const [calendarDays, setCalendarDays] = useState([]);
+
+  useEffect(() => {
+    console.log("START: CreateCalendar");
+
+    const daysInMonth = new Date(year, month, 0).getDate();
+    const firstDayOfWeek = new Date(year, month - 1, 1).getDay();
+    const daysArray = [];
+
+    // Add empty cells at the start if the first day of the month is not Sunday
+    for (let i = 0; i < firstDayOfWeek; i++) {
+      daysArray.push(<View key={`empty-${i}`} style={styles.day}><Text></Text></View>);
+    }
+
+    // Create a cell for each day in the month
+    for (let day = 1; day <= daysInMonth; day++) {
+      daysArray.push(<View key={`day-${day}`} style={styles.day}><Text>{day}</Text></View>);
+    }
+
+    setCalendarDays(daysArray);
+    console.log("END: CreateCalendar");
+  }, [year, month]);
+
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
+    <View style={styles.calendarContainer}>
+      <Text style={styles.calendarHeader}>January 2024</Text>
+      <View style={styles.calendar}>
+        {calendarDays}
+      </View>
     </View>
   );
-}
+};
+
+const App = () => {
+  return (
+    <View style={styles.appContainer}>
+      <Text style={styles.appTitle}>Sync-Ur-Life</Text>
+      <Calendar year={2024} month={1} />
+    </View>
+  );
+};
 
 const styles = StyleSheet.create({
-  container: {
+  appContainer: {
     flex: 1,
-    backgroundColor: '#fff',
+    justifyContent: 'center',
     alignItems: 'center',
+  },
+  appTitle: {
+    fontSize: 24,
+    fontWeight: 'bold',
+  },
+  calendarContainer: {
+    margin: 20,
+    padding: 10,
+    borderWidth: 1,
+    borderColor: '#ddd',
+    borderRadius: 5,
+  },
+  calendarHeader: {
+    marginBottom: 10,
+    fontSize: 24,
+    fontWeight: 'bold',
+  },
+  calendar: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
     justifyContent: 'center',
   },
+  day: {
+    width: '14%', // 100 / 7 days in a week
+    padding: 10,
+    borderWidth: 1,
+    borderColor: '#ddd',
+    alignItems: 'center',
+  },
 });
+
+export default App;
