@@ -1,5 +1,33 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, Pressable, Alert } from 'react-native';
+import { View, Text, StyleSheet, Pressable, Modal, TextInput, Button } from 'react-native';
+
+const InputModal = ({ visible, onClose, onSubmit }) => {
+  const [inputValue, setInputValue] = useState('');
+
+  const handleConfirm = () => {
+    onSubmit(inputValue);
+    onClose();
+  };
+
+  return (
+    <Modal visible={visible} animationType="slide" transparent={true}>
+      <View style={styles.centeredView}>
+        <View style={styles.modalView}>
+          <TextInput
+            style={styles.input}
+            onChangeText={setInputValue}
+            value={inputValue}
+            placeholder="Enter your note here"
+          />
+          <View style={styles.modalButtons}>
+            <Button title="Cancel" onPress={onClose} />
+            <Button title="OK" onPress={handleConfirm} />
+          </View>
+        </View>
+      </View>
+    </Modal>
+  );
+};
 
 const Calendar = ({ year, month, onDateSelect }) => {
   const [calendarDays, setCalendarDays] = useState([]);
@@ -52,43 +80,38 @@ const TaskManager = ({ tasks }) => {
 
 const App = () => {
   const [tasks, setTasks] = useState([]);
-
-  // Defined year and month here for clarity
-  const year = 2024;
-  const month = 1;
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [selectedDay, setSelectedDay] = useState(null);
 
   const handleDateSelect = (day) => {
-    Alert.prompt(
-      'Add Note',
-      `Enter a note for ${day}/${month}/${year}:`,
-      [
-        {
-          text: 'Cancel',
-          style: 'cancel',
-        },
-        {
-          text: 'OK',
-          onPress: (note) => {
-            const newTask = { day, month, year, note }; // Including month and year in the task object
-            setTasks([...tasks, newTask]);
-          },
-        },
-      ],
-      'plain-text'
-    );
+    setSelectedDay(day);
+    setIsModalVisible(true);
+  };
+
+  const handleModalClose = () => {
+    setIsModalVisible(false);
+  };
+
+  const handleModalSubmit = (note) => {
+    const newTask = { day: selectedDay, month, year, note };
+    setTasks([...tasks, newTask]);
   };
 
   return (
     <View style={styles.appContainer}>
       <Text style={styles.appTitle}>Sync-Ur-Life</Text>
-      <Calendar year={year} month={month} onDateSelect={handleDateSelect} />
+      <Calendar year={2024} month={1} onDateSelect={handleDateSelect} />
       <TaskManager tasks={tasks} />
+      <InputModal
+        visible={isModalVisible}
+        onClose={handleModalClose}
+        onSubmit={handleModalSubmit}
+      />
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  // Combine and adjust your styles here...
   appContainer: {
     flex: 1,
     justifyContent: 'center',
@@ -124,7 +147,10 @@ const styles = StyleSheet.create({
   },
   taskManagerContainer: {
     marginTop: 20,
-    // Other styles for the task manager container...
+    padding: 20,
+    borderWidth: 1,
+    borderColor: '#ddd',
+    borderRadius: 5,
   },
   title: {
     fontSize: 20,
@@ -132,9 +158,41 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   task: {
-    // Styles for individual tasks...
+    marginBottom: 5,
   },
-  // Add any additional styles you need here...
+  centeredView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 22,
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: 'white',
+    borderRadius: 20,
+    padding: 35,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  input: {
+    height: 40,
+    margin: 12,
+    borderWidth: 1,
+    padding: 10,
+    width: '100%',
+  },
+  modalButtons: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 10,
+  },
 });
 
 export default App;
