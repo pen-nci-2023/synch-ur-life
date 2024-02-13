@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, Pressable, Modal, TextInput, Button } from 'react-native';
+import { View, Text, StyleSheet, Pressable, Modal, TextInput } from 'react-native';
 
 const InputModal = ({ visible, onClose, onSubmit }) => {
   const [inputValue, setInputValue] = useState('');
@@ -20,8 +20,8 @@ const InputModal = ({ visible, onClose, onSubmit }) => {
             placeholder="Enter your note here"
           />
           <View style={styles.modalButtons}>
-            <Button title="Cancel" onPress={onClose} />
-            <Button title="OK" onPress={handleConfirm} />
+            <Pressable onPress={onClose} style={styles.button}><Text>Cancel</Text></Pressable>
+            <Pressable onPress={handleConfirm} style={styles.button}><Text>OK</Text></Pressable>
           </View>
         </View>
       </View>
@@ -49,7 +49,6 @@ const Calendar = ({ year, month, onDateSelect }) => {
       );
     }
 
-    // Add empty cells at the end to make up 7 cells per row
     const totalCells = daysArray.length;
     const cellsToAdd = (7 - (totalCells % 7)) % 7;
     for (let i = 0; i < cellsToAdd; i++) {
@@ -82,6 +81,8 @@ const App = () => {
   const [tasks, setTasks] = useState([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedDay, setSelectedDay] = useState(null);
+  const year = 2024;
+  const month = 1;
 
   const handleDateSelect = (day) => {
     setSelectedDay(day);
@@ -95,12 +96,13 @@ const App = () => {
   const handleModalSubmit = (note) => {
     const newTask = { day: selectedDay, month, year, note };
     setTasks([...tasks, newTask]);
+    setIsModalVisible(false);
   };
 
   return (
     <View style={styles.appContainer}>
       <Text style={styles.appTitle}>Sync-Ur-Life</Text>
-      <Calendar year={2024} month={1} onDateSelect={handleDateSelect} />
+      <Calendar year={year} month={month} onDateSelect={handleDateSelect} />
       <TaskManager tasks={tasks} />
       <InputModal
         visible={isModalVisible}
@@ -110,6 +112,7 @@ const App = () => {
     </View>
   );
 };
+
 
 const styles = StyleSheet.create({
   appContainer: {
@@ -194,5 +197,6 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
 });
+
 
 export default App;
