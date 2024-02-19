@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, Pressable, Modal, TextInput } from 'react-native';
 import Calendar from './Calendar'; // Import Calendar component
-import firebase from 'firebase/app'; // Import Firebase core
 import 'firebase/firestore'; // Import Firestore service
-import firebase, { db } from './firebaseConfig';
+import { db } from './firebaseConfig';
 
 // Import the Firebase configuration from a separate file
 import { firebaseConfig } from './firebaseConfig';
