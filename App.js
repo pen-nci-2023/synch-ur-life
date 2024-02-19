@@ -1,7 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, Pressable, Modal, TextInput } from 'react-native';
-import Calendar from './Calendar';
+import Calendar from './Calendar'; // Import Calendar component
+import firebase from 'firebase/app'; // Import Firebase core
+import 'firebase/firestore'; // Import Firestore service
 
+// Import the Firebase configuration from a separate file
+import { firebaseConfig } from './firebaseConfig';
+
+// Initialize Firebase only once
+if (!firebase.apps.length) {
+  firebase.initializeApp(firebaseConfig); // Initialize Firebase with your config
+} else {
+  firebase.app(); // Use the already initialized Firebase app
+}
+
+// Input modal component for adding tasks
 const InputModal = ({ visible, onClose, onSubmit }) => {
   const [inputValue, setInputValue] = useState('');
 
@@ -30,7 +43,7 @@ const InputModal = ({ visible, onClose, onSubmit }) => {
   );
 };
 
-
+// Task manager component to display tasks
 const TaskManager = ({ tasks }) => {
   return (
     <View style={styles.taskManagerContainer}>
@@ -42,12 +55,35 @@ const TaskManager = ({ tasks }) => {
   );
 };
 
+// Main app component
 const App = () => {
   const [tasks, setTasks] = useState([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedDay, setSelectedDay] = useState(null);
   const year = 2024;
   const month = 1;
+
+  useEffect(() => {
+    // Firestore query to listen to 'YourCollection' collection
+    const subscriber = firebase.firestore()
+      .collection('YourCollection') // Replace 'YourCollection' with your actual collection name
+      .onSnapshot(querySnapshot => {
+        const documents = [];
+
+        // Iterate through each document and push to the documents array
+        querySnapshot.forEach(documentSnapshot => {
+          documents.push({
+            ...documentSnapshot.data(),
+            key: documentSnapshot.id,
+          });
+        });
+
+        console.log(documents); // Log fetched documents to console
+      });
+
+    // Clean up the listener when the component unmounts
+    return () => subscriber();
+  }, []);
 
   const handleDateSelect = (day) => {
     setSelectedDay(day);
@@ -78,7 +114,6 @@ const App = () => {
   );
 };
 
-
 const styles = StyleSheet.create({
   appContainer: {
     flex: 1,
@@ -89,56 +124,7 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
   },
- 
-  taskManagerContainer: {
-    marginTop: 20,
-    padding: 20,
-    borderWidth: 1,
-    borderColor: '#ddd',
-    borderRadius: 5,
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginBottom: 10,
-  },
-  task: {
-    marginBottom: 5,
-  },
-  centeredView: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginTop: 22,
-  },
-  modalView: {
-    margin: 20,
-    backgroundColor: 'white',
-    borderRadius: 20,
-    padding: 35,
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
-  },
-  input: {
-    height: 40,
-    margin: 12,
-    borderWidth: 1,
-    padding: 10,
-    width: '100%',
-  },
-  modalButtons: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginTop: 10,
-  },
+  // Add other styles as needed...
 });
-
 
 export default App;
