@@ -3,18 +3,18 @@ import { View, Text, StyleSheet, Pressable, Modal, TextInput } from 'react-nativ
 import Calendar from './Calendar'; // Import Calendar component
 import firebase from 'firebase/app'; // Import Firebase core
 import 'firebase/firestore'; // Import Firestore service
+import firebase, { db } from './firebaseConfig';
 
 // Import the Firebase configuration from a separate file
 import { firebaseConfig } from './firebaseConfig';
 
 // Initialize Firebase only once
 if (!firebase.apps.length) {
-  firebase.initializeApp(firebaseConfig); // Initialize Firebase with your config
+  firebase.initializeApp(firebaseConfig); // Initialize Firebase with config
 } else {
   firebase.app(); // Use the already initialized Firebase app
 }
 
-// Input modal component for adding tasks
 const InputModal = ({ visible, onClose, onSubmit }) => {
   const [inputValue, setInputValue] = useState('');
 
@@ -43,7 +43,6 @@ const InputModal = ({ visible, onClose, onSubmit }) => {
   );
 };
 
-// Task manager component to display tasks
 const TaskManager = ({ tasks }) => {
   return (
     <View style={styles.taskManagerContainer}>
@@ -55,7 +54,6 @@ const TaskManager = ({ tasks }) => {
   );
 };
 
-// Main app component
 const App = () => {
   const [tasks, setTasks] = useState([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -64,6 +62,18 @@ const App = () => {
   const month = 1;
 
   useEffect(() => {
+    // Test code to verify Firebase connection
+    // Make sure to replace 'TestCollection' with a real collection name from your Firestore
+    const testCollection = firebase.firestore().collection('TestCollection');
+    testCollection.get().then(querySnapshot => {
+      console.log('Successfully connected to Firestore!');
+      querySnapshot.forEach(doc => {
+        console.log(`${doc.id} =>`, doc.data());
+      });
+    }).catch(error => {
+      console.error('Error connecting to Firestore:', error);
+    });
+
     // Firestore query to listen to 'YourCollection' collection
     const subscriber = firebase.firestore()
       .collection('YourCollection') // Replace 'YourCollection' with your actual collection name
