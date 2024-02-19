@@ -1,18 +1,8 @@
+
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, Pressable, Modal, TextInput } from 'react-native';
 import Calendar from './Calendar'; // Import Calendar component
-import 'firebase/firestore'; // Import Firestore service
-import { db } from './firebaseConfig';
-
-// Import the Firebase configuration from a separate file
-import { firebaseConfig } from './firebaseConfig';
-
-// Initialize Firebase only once
-if (!firebase.apps.length) {
-  firebase.initializeApp(firebaseConfig); // Initialize Firebase with config
-} else {
-  firebase.app(); // Use the already initialized Firebase app
-}
+import { db } from './firebaseConfig'; // Import db from firebaseConfig
 
 const InputModal = ({ visible, onClose, onSubmit }) => {
   const [inputValue, setInputValue] = useState('');
@@ -61,32 +51,16 @@ const App = () => {
   const month = 1;
 
   useEffect(() => {
-    // Test code to verify Firebase connection
-    // Make sure to replace 'TestCollection' with a real collection name from your Firestore
-    const testCollection = firebase.firestore().collection('TestCollection');
-    testCollection.get().then(querySnapshot => {
-      console.log('Successfully connected to Firestore!');
-      querySnapshot.forEach(doc => {
-        console.log(`${doc.id} =>`, doc.data());
-      });
-    }).catch(error => {
-      console.error('Error connecting to Firestore:', error);
-    });
-
-    // Firestore query to listen to 'YourCollection' collection
-    const subscriber = firebase.firestore()
-      .collection('YourCollection') // Replace 'YourCollection' with your actual collection name
+    // Firestore query to listen to a specific collection
+    const subscriber = db.collection('YourCollection')
       .onSnapshot(querySnapshot => {
         const documents = [];
-
-        // Iterate through each document and push to the documents array
         querySnapshot.forEach(documentSnapshot => {
           documents.push({
             ...documentSnapshot.data(),
             key: documentSnapshot.id,
           });
         });
-
         console.log(documents); // Log fetched documents to console
       });
 
@@ -133,7 +107,47 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
   },
-  // Add other styles as needed...
+  // Additional styles as needed...
+  taskManagerContainer: {
+    marginTop: 20,
+    padding: 20,
+    borderWidth: 1,
+    borderColor: '#ddd',
+    borderRadius: 5,
+  },
+  title: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
+  task: {
+    marginBottom: 5,
+  },
+  centeredView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 22,
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: 'white',
+    borderRadius: 20,
+    padding: 35,
+    alignItems: 'center',
+  },
+  input: {
+    height: 40,
+    margin: 12,
+    borderWidth: 1,
+    padding: 10,
+    width: '100%',
+  },
+  modalButtons: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 10,
+  },
 });
 
 export default App;
