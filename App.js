@@ -1,8 +1,12 @@
 
+// App.js
+
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, Pressable, Modal, TextInput } from 'react-native';
 import Calendar from './Calendar'; // Import Calendar component
 import { db } from './firebaseConfig'; // Import db from firebaseConfig
+import { collection, onSnapshot } from 'firebase/firestore';
+
 
 const InputModal = ({ visible, onClose, onSubmit }) => {
   const [inputValue, setInputValue] = useState('');
@@ -51,21 +55,16 @@ const App = () => {
   const month = 1;
 
   useEffect(() => {
-    // Firestore query to listen to a specific collection
-    const subscriber = db.collection('YourCollection')
-      .onSnapshot(querySnapshot => {
-        const documents = [];
-        querySnapshot.forEach(documentSnapshot => {
-          documents.push({
-            ...documentSnapshot.data(),
-            key: documentSnapshot.id,
+      const queryRef = collection(db, 'test');
+      const unsubscribe = onSnapshot(queryRef, (querySnapshot) => {
+          const documents = [];
+          querySnapshot.forEach((doc) => {
+              documents.push({ ...doc.data(), key: doc.id });
           });
-        });
-        console.log(documents); // Log fetched documents to console
+          console.log(documents);
       });
-
-    // Clean up the listener when the component unmounts
-    return () => subscriber();
+  
+      return () => unsubscribe();
   }, []);
 
   const handleDateSelect = (day) => {
