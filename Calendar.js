@@ -75,11 +75,13 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
 
-  dayLabels: { // New style added for day labels row
+  dayLabels: { 
+    // day labels row
     flexDirection: 'row',
     justifyContent: 'center',
   },
-  dayLabel: { // New style added for individual day labels
+  dayLabel: { 
+    // individual day labels
     width: '14%',
     textAlign: 'center',
   },
