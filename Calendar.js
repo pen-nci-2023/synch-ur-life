@@ -2,6 +2,9 @@
 
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, Pressable } from 'react-native';
+const logger = require('./app/services/logger');
+
+logger.info('Application has started');
 
 const Calendar = ({ onDateSelect }) => {
   const [calendarDays, setCalendarDays] = useState([]);
