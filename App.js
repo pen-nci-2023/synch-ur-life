@@ -1,4 +1,5 @@
 // App.js
+console.log("START: App.js")
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, Pressable, Modal, TextInput } from 'react-native';
 import Calendar from './Calendar';
