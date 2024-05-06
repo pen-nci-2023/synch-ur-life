@@ -1,7 +1,7 @@
 // utilities.js
 
 
-function getCurrentFormattedDateTime() {
+function getCurrentDateTime() {
     const now = new Date();
     const year = now.getFullYear();
     const month = (now.getMonth() + 1).toString().padStart(2, '0');
@@ -19,6 +19,6 @@ function valuetest(){
     return("hello there");
 }
 
-export { getCurrentFormattedDateTime };
+export { getCurrentDateTime };
 
 export { valuetest };

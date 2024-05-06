@@ -1,12 +1,8 @@
 // Calendar.js
-// const { getCurrentFormattedDateTime } = require('./utilities');
-//import { getCurrentFormattedDateTime } from './utilities';
 
-//console.log("START: Calendar.js [x1]", $getCurrentFormattedDateTime()) ;
+import { getCurrentDateTime} from './Utilities';
 
-import { valuetest } from './Utilities';
-
-console.log(valuetest()) ;
+console.log("START: Calendar.js [x1] ", getCurrentDateTime()) ;
 
 
 import React, { useState, useEffect } from 'react';
