@@ -5,12 +5,21 @@ import { View, Text, StyleSheet, Pressable, Modal, TextInput } from 'react-nativ
 import Calendar from './Calendar';
 import { db } from './firebaseConfig';
 import { collection, onSnapshot, addDoc, deleteDoc, doc, updateDoc } from 'firebase/firestore';
+import DatePicker from '@react-native-community/datetimepicker'; // Make sure to install this package
 
 const InputModal = ({ visible, onClose, onSubmit }) => {
-  const [inputValue, setInputValue] = useState('');
+  const [description, setDescription] = useState('');
+  const [startDate, setStartDate] = useState(new Date());
+  const [endDate, setEndDate] = useState(new Date());
+  const [tags, setTags] = useState('');
+  const [showStartDatePicker, setShowStartDatePicker] = useState(false);
+  const [showEndDatePicker, setShowEndDatePicker] = useState(false);
+
+
+
 
   const handleConfirm = () => {
-    onSubmit(inputValue);
+    onSubmit({ description, startDate, endDate, tags });
     onClose();
   };
 
@@ -20,9 +29,44 @@ const InputModal = ({ visible, onClose, onSubmit }) => {
         <View style={styles.modalView}>
           <TextInput
             style={styles.input}
-            onChangeText={setInputValue}
-            value={inputValue}
+            onChangeText={setDescription}
+            value={description}
             placeholder="Enter task description"
+          />
+          
+<Pressable onPress={() => setShowStartDatePicker(true)} style={styles.button}>
+            <Text>Select Start Date</Text>
+          </Pressable>
+          {showStartDatePicker && (
+            <DatePicker
+              value={startDate}
+              mode="date"
+              display="default"
+              onChange={(event, selectedDate) => {
+                setShowStartDatePicker(false);
+                setStartDate(selectedDate || startDate);
+              }}
+            />
+          )}
+          <Pressable onPress={() => setShowEndDatePicker(true)} style={styles.button}>
+            <Text>Select End Date</Text>
+          </Pressable>
+          {showEndDatePicker && (
+            <DatePicker
+              value={endDate}
+              mode="date"
+              display="default"
+              onChange={(event, selectedDate) => {
+                setShowEndDatePicker(false);
+                setEndDate(selectedDate || endDate);
+              }}
+            />
+          )}
+          <TextInput
+            style={styles.input}
+            onChangeText={setTags}
+            value={tags}
+            placeholder="Enter tags, separated by commas"
           />
           <View style={styles.modalButtons}>
             <Pressable onPress={onClose} style={styles.button}><Text>Cancel</Text></Pressable>
@@ -63,20 +107,22 @@ const App = () => {
     return () => unsubscribe();
   }, []);
 
-  const handleAddTask = async (description) => {
-    await addDoc(tasksCollectionRef, { description });
+  const handleAddTask = async ({ description, startDate, endDate, tags }) => {
+    await addDoc(tasksCollectionRef, { description, startDate, endDate, tags });
   };
+
 
   const handleDeleteTask = async (id) => {
     const taskDoc = doc(db, 'tasks', id);
     await deleteDoc(taskDoc);
   };
 
-  const handleUpdateTask = async (id, description) => {
-    // This example assumes you want to toggle the task's completion status
-    const taskDoc = doc(db, 'tasks', id);
-    await updateDoc(taskDoc, { description: `${description} (updated)` });
-  };
+  handleUpdateTask(taskId, {
+    description: "New description",
+    startDate: newStartDate,
+    endDate: newEndDate,
+    tags: newTags
+  });
 
   return (
     <View style={styles.appContainer}>
