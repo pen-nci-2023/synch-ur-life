@@ -1,8 +1,14 @@
 // Calendar.js
 
-console.log("START: Calendar.js [x1]") ;
+import { getCurrentDateTime} from './Utilities';
+
+console.log("START: Calendar.js [x1] ", getCurrentDateTime()) ;
+
+
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, Pressable } from 'react-native';
+
+
 
 const Calendar = ({ onDateSelect }) => {
   const [calendarDays, setCalendarDays] = useState([]);
