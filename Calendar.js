@@ -1,5 +1,6 @@
 // Calendar.js
 
+console.log("START: Calendar.js [x1]") ;
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, Pressable } from 'react-native';
 
@@ -98,3 +99,5 @@ const styles = StyleSheet.create({
 });
 
 export default Calendar;
+
+console.log("END: Calendar.js [x2]") ;

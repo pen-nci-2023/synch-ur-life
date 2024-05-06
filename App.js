@@ -1,4 +1,5 @@
 // App.js
+console.log("START: App.js [x4]");
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, Pressable, Modal, TextInput } from 'react-native';
 import Calendar from './Calendar';
@@ -167,3 +168,5 @@ const styles = StyleSheet.create({
 });
 
 export default App;
+
+console.log("END: App.js [x4]");
