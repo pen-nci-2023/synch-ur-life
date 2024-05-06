@@ -1,8 +1,18 @@
 // Calendar.js
+// const { getCurrentFormattedDateTime } = require('./utilities');
+//import { getCurrentFormattedDateTime } from './utilities';
 
-console.log("START: Calendar.js [x1]") ;
+//console.log("START: Calendar.js [x1]", $getCurrentFormattedDateTime()) ;
+
+import { valuetest } from './Utilities';
+
+console.log(valuetest()) ;
+
+
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, Pressable } from 'react-native';
+
+
 
 const Calendar = ({ onDateSelect }) => {
   const [calendarDays, setCalendarDays] = useState([]);
