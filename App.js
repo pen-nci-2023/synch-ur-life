@@ -21,11 +21,13 @@ const App = () => {
 
     // Navigate to the previous month
     const goToPreviousMonth = () => {
+        console.log("Going to previous month from", currentDate);
         setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1));
     };
 
     // Navigate to the next month
     const goToNextMonth = () => {
+        console.log("Going to next month from", currentDate);
         setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1));
     };
 
@@ -170,81 +172,80 @@ const App = () => {
 
 // Styles for the components
 const styles = StyleSheet.create({
-  appContainer: {
-      flex: 1,
-      justifyContent: 'center',
-      alignItems: 'center',
-  },
-  appTitle: {
-      fontSize: 24,
-      fontWeight: 'bold',
-  },
-  navigationContainer: {
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      marginTop: 20,
-  },
-  navButton: {
-      backgroundColor: '#007bff',
-      padding: 10,
-      borderRadius: 5,
-      marginHorizontal: 10,
-  },
-  task: {
-      marginBottom: 5,
-      flexDirection: 'row',
-      alignItems: 'center',
-      backgroundColor: '#f8f8f8',
-      padding: 10,
-      borderRadius: 5,
-  },
-  button: {
-      marginLeft: 10,
-      backgroundColor: '#007bff',
-      padding: 10,
-      borderRadius: 5,
-  },
-  addButton: {
-      marginTop: 20,
-      backgroundColor: '#007bff',
-      padding: 10,
-      borderRadius: 5,
-  },
-  input: {
-      height: 40,
-      margin: 12,
-      borderWidth: 1, 
-      padding: 10,
-      width: '100%',
-  },
-  modalView: {
-      margin: 20,
-      backgroundColor: 'white',
-      borderRadius: 20,
-      padding: 35,
-      alignItems: 'center',
-      shadowColor: "#000",
-      shadowOffset: {
-          width: 0,
-          height: 2
-      },
-      shadowOpacity: 0.25,
-      shadowRadius: 3.84,
-      elevation: 5,
-  },
-  centeredView: {
-      flex: 1,
-      justifyContent: 'center',
-      alignItems: 'center',
-      marginTop: 22,
-  },
-  modalButtons: {
-      flexDirection: 'row',
-      justifyContent: 'space-around',
-      marginTop: 15,
-  },
+    appContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    appTitle: {
+        fontSize: 24,
+        fontWeight: 'bold',
+    },
+    navigationContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        marginTop: 20,
+    },
+    navButton: {
+        backgroundColor: '#007bff',
+        padding: 10,
+        borderRadius: 5,
+        marginHorizontal: 10,
+    },
+    task: {
+        marginBottom: 5,
+        flexDirection: 'row',
+        alignItems: 'center',
+        backgroundColor: '#f8f8f8',
+        padding: 10,
+        borderRadius: 5,
+    },
+    button: {
+        marginLeft: 10,
+        backgroundColor: '#007bff',
+        padding: 10,
+        borderRadius: 5,
+    },
+    addButton: {
+        marginTop: 20,
+        backgroundColor: '#007bff',
+        padding: 10,
+        borderRadius: 5,
+    },
+    input: {
+        height: 40,
+        margin: 12,
+        borderWidth: 1,
+        padding: 10,
+        width: '100%',
+    },
+    modalView: {
+        margin: 20,
+        backgroundColor: 'white',
+        borderRadius: 20,
+        padding: 35,
+        alignItems: 'center',
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 2
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+        elevation: 5,
+    },
+    centeredView: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginTop: 22,
+    },
+    modalButtons: {
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+        marginTop: 15,
+    },
 });
-
 
 export default App; // Export the App component as the default
 
