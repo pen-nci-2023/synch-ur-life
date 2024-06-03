@@ -4,12 +4,12 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, Pressable, Modal, TextInput, Platform } from 'react-native';
 import { db } from './firebaseConfig';
 import { collection, onSnapshot, addDoc, deleteDoc, doc, updateDoc } from 'firebase/firestore';
-import DatePicker from '@react-native-community/datetimepicker'; // DatePicker import, note: this is not supported on web
-import Calendar from './Calendar';  // Importing the Calendar component, ensure this component is properly set up
+import DatePicker from '@react-native-community/datetimepicker'; // Note: This is not supported on web
+import Calendar from './Calendar';  // Ensure the Calendar component is properly set up
 
 // Main App component
 const App = () => {
-    // State hooks for task management and modal visibility
+    // State hooks for task management, modal visibility, and calendar navigation
     const [tasks, setTasks] = useState([]);
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [description, setDescription] = useState('');
@@ -17,6 +17,17 @@ const App = () => {
     const [endDate, setEndDate] = useState(new Date());
     const [tags, setTags] = useState('');
     const [showDatePicker, setShowDatePicker] = useState({ start: false, end: false });
+    const [currentDate, setCurrentDate] =  useState(new Date());  // Manage the current date for the calendar
+
+    // Navigate to the previous month
+    const goToPreviousMonth = () => {
+        setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1));
+    };
+
+    // Navigate to the next month
+    const goToNextMonth = () => {
+        setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1));
+    };
 
     // Reference to Firestore collection
     const tasksCollectionRef = collection(db, 'tasks');
@@ -63,7 +74,15 @@ const App = () => {
     return (
         <View style={styles.appContainer}>
             <Text style={styles.appTitle}>Sync-Ur-Life</Text>
-            <Calendar /> // Display the Calendar component
+            <Calendar currentDate={currentDate} />  // Pass the current date to the Calendar component
+            <View style={styles.navigationContainer}>
+                <Pressable onPress={goToPreviousMonth} style={styles.navButton}>
+                    <Text>Previous Month</Text>
+                </Pressable>
+                <Pressable onPress={goToNextMonth} style={styles.navButton}>
+                    <Text>Next Month</Text>
+                </Pressable>
+            </View>
             <Pressable onPress={() => setIsModalVisible(true)} style={styles.addButton}>
                 <Text>Add Task</Text>
             </Pressable>
@@ -151,69 +170,81 @@ const App = () => {
 
 // Styles for the components
 const styles = StyleSheet.create({
-    appContainer: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    appTitle: {
-        fontSize: 24,
-        fontWeight: 'bold',
-    },
-    task: {
-        marginBottom: 5,
-        flexDirection: 'row',
-        alignItems: 'center',
-        backgroundColor: '#f8f8f8',
-        padding: 10,
-        borderRadius: 5,
-    },
-    button: {
-        marginLeft: 10,
-        backgroundColor: '#007bff',
-        padding: 10,
-        borderRadius: 5,
-    },
-    addButton: {
-        marginTop: 20,
-        backgroundColor: '#007bff',
-        padding: 10,
-        borderRadius: 5,
-    },
-    input: {
-        height: 40,
-        margin: 12,
-        borderWidth: 1,
-        padding: 10,
-        width: '100%',
-    },
-    modalView: {
-        margin: 20,
-        backgroundColor: 'white',
-        borderRadius: 20,
-        padding: 35,
-        alignItems: 'center',
-        shadowColor: "#000",
-        shadowOffset: {
-            width: 0,
-            height: 2
-        },
-        shadowOpacity: 0.25,
-        shadowRadius: 3.84,
-        elevation: 5,
-    },
-    centeredView: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        marginTop: 22,
-    },
-    modalButtons: {
-        flexDirection: 'row',
-        justifyContent: 'space-around',
-        marginTop: 15,
-    },
+  appContainer: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+  },
+  appTitle: {
+      fontSize: 24,
+      fontWeight: 'bold',
+  },
+  navigationContainer: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      marginTop: 20,
+  },
+  navButton: {
+      backgroundColor: '#007bff',
+      padding: 10,
+      borderRadius: 5,
+      marginHorizontal: 10,
+  },
+  task: {
+      marginBottom: 5,
+      flexDirection: 'row',
+      alignItems: 'center',
+      backgroundColor: '#f8f8f8',
+      padding: 10,
+      borderRadius: 5,
+  },
+  button: {
+      marginLeft: 10,
+      backgroundColor: '#007bff',
+      padding: 10,
+      borderRadius: 5,
+  },
+  addButton: {
+      marginTop: 20,
+      backgroundColor: '#007bff',
+      padding: 10,
+      borderRadius: 5,
+  },
+  input: {
+      height: 40,
+      margin: 12,
+      borderWidth: 1, 
+      padding: 10,
+      width: '100%',
+  },
+  modalView: {
+      margin: 20,
+      backgroundColor: 'white',
+      borderRadius: 20,
+      padding: 35,
+      alignItems: 'center',
+      shadowColor: "#000",
+      shadowOffset: {
+          width: 0,
+          height: 2
+      },
+      shadowOpacity: 0.25,
+      shadowRadius: 3.84,
+      elevation: 5,
+  },
+  centeredView: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      marginTop: 22,
+  },
+  modalButtons: {
+      flexDirection: 'row',
+      justifyContent: 'space-around',
+      marginTop: 15,
+  },
 });
+
 
 export default App; // Export the App component as the default
 
