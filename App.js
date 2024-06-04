@@ -9,7 +9,7 @@ import Calendar from './Calendar';  // Ensure the Calendar component is properly
 
 // Main App component
 const App = () => {
-    // State hooks for task management, modal visibility, and calendar navigation
+// State hooks for task management, modal visibility, and calendar navigation
     const [tasks, setTasks] = useState([]);
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [description, setDescription] = useState('');
@@ -17,7 +17,7 @@ const App = () => {
     const [endDate, setEndDate] = useState(new Date());
     const [tags, setTags] = useState('');
     const [showDatePicker, setShowDatePicker] = useState({ start: false, end: false });
-    const [currentDate, setCurrentDate] =  useState(new Date());  // Manage the current date for the calendar
+    const [currentDate, setCurrentDate] = useState(new Date());  // Manage the current date for the calendar
 
     // Navigate to the previous month
     const goToPreviousMonth = () => {
@@ -42,6 +42,11 @@ const App = () => {
         });
         return () => unsubscribe();  // Cleanup subscription on component unmount
     }, []);
+
+    // Debugging current date changes
+    useEffect(() => {
+        console.log("Calendar updated with new date:", currentDate);
+    }, [currentDate]);
 
     // Function to handle adding a new task
     const handleAddTask = async (taskDetails) => {
@@ -76,7 +81,7 @@ const App = () => {
     return (
         <View style={styles.appContainer}>
             <Text style={styles.appTitle}>Sync-Ur-Life</Text>
-            <Calendar currentDate={currentDate} />  // Pass the current date to the Calendar component
+            <Calendar currentDate={currentDate} />
             <View style={styles.navigationContainer}>
                 <Pressable onPress={goToPreviousMonth} style={styles.navButton}>
                     <Text>Previous Month</Text>
