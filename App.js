@@ -9,7 +9,7 @@ import Calendar from './Calendar';  // Ensure the Calendar component is properly
 
 // Main App component
 const App = () => {
-// State hooks for task management, modal visibility, and calendar navigation
+    // State hooks for task management, modal visibility, and calendar navigation
     const [tasks, setTasks] = useState([]);
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [description, setDescription] = useState('');
@@ -93,17 +93,19 @@ const App = () => {
             <Pressable onPress={() => setIsModalVisible(true)} style={styles.addButton}>
                 <Text>Add Task</Text>
             </Pressable>
-            {tasks.map((task) => (
-                <View key={task.id} style={styles.task}>
-                    <Text>{task.description}</Text>
-                    <Pressable onPress={() => handleUpdateTask(task.id, { description: "Updated description" })} style={styles.button}>
-                        <Text>Edit</Text>
-                    </Pressable>
-                    <Pressable onPress={() => handleDeleteTask(task.id)} style={styles.button}>
-                        <Text>Delete</Text>
-                    </Pressable>
-                </View>
-            ))}
+            <div className="task-items">
+                {tasks.map((task) => (
+                    <View key={task.id} style={styles.task}>
+                        <Text>{task.description}</Text>
+                        <Pressable onPress={() => handleUpdateTask(task.id, { description: "Updated description" })} style={styles.button}>
+                            <Text>Edit</Text>
+                        </Pressable>
+                        <Pressable onPress={() => handleDeleteTask(task.id)} style={styles.button}>
+                            <Text>Delete</Text>
+                        </Pressable>
+                    </View>
+                ))}
+            </div>
             <Modal visible={isModalVisible} animationType="slide" transparent={true}>
                 <View style={styles.centeredView}>
                     <View style={styles.modalView}>
@@ -171,6 +173,18 @@ const App = () => {
                     </View>
                 </View>
             </Modal>
+            <div className="va-dialog" style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
+                <form>
+                    <label htmlFor="freeform">Speak to your Virtual Assistance</label>
+                    <br />
+                    <textarea id="freeform" name="freeform" rows="4" cols="50">
+                        Enter text here...
+                    </textarea>
+                    <br />
+                    <br />
+                    <input type="submit" value="Submit" />
+                </form>
+            </div>
         </View>
     );
 };
