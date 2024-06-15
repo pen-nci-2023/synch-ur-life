@@ -1,3 +1,4 @@
+// REPO: synch-ur-life
 // App.js
 console.log("START: App.js [x4]"); // Logging the start of the App component execution
 import React, { useState, useEffect } from 'react';
@@ -93,17 +94,19 @@ const App = () => {
             <Pressable onPress={() => setIsModalVisible(true)} style={styles.addButton}>
                 <Text>Add Task</Text>
             </Pressable>
-            {tasks.map((task) => (
-                <View key={task.id} style={styles.task}>
-                    <Text>{task.description}</Text>
-                    <Pressable onPress={() => handleUpdateTask(task.id, { description: "Updated description" })} style={styles.button}>
-                        <Text>Edit</Text>
-                    </Pressable>
-                    <Pressable onPress={() => handleDeleteTask(task.id)} style={styles.button}>
-                        <Text>Delete</Text>
-                    </Pressable>
-                </View>
-            ))}
+            <div className="task-items">
+                {tasks.map((task) => (
+                    <View key={task.id} style={styles.task}>
+                        <Text>{task.description}</Text>
+                        <Pressable onPress={() => handleUpdateTask(task.id, { description: "Updated description" })} style={styles.button}>
+                            <Text>Edit</Text>
+                        </Pressable>
+                        <Pressable onPress={() => handleDeleteTask(task.id)} style={styles.button}>
+                            <Text>Delete</Text>
+                        </Pressable>
+                    </View>
+                ))}
+            </div>
             <Modal visible={isModalVisible} animationType="slide" transparent={true}>
                 <View style={styles.centeredView}>
                     <View style={styles.modalView}>
@@ -171,7 +174,7 @@ const App = () => {
                     </View>
                 </View>
             </Modal>
-            <div style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
+            <div className="va-dialog" style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
                 <form>
                     <label htmlFor="freeform">Speak to your Virtual Assistance</label>
                     <br />
@@ -182,6 +185,8 @@ const App = () => {
                     <br />
                     <input type="submit" value="Submit" />
                 </form>
+                <div className='va-dialog-output'>
+                </div>
             </div>
         </View>
     );
