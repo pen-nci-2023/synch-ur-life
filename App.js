@@ -9,7 +9,7 @@ import Calendar from './Calendar';  // Ensure the Calendar component is properly
 
 // Main App component
 const App = () => {
-// State hooks for task management, modal visibility, and calendar navigation
+    // State hooks for task management, modal visibility, and calendar navigation
     const [tasks, setTasks] = useState([]);
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [description, setDescription] = useState('');
@@ -171,6 +171,18 @@ const App = () => {
                     </View>
                 </View>
             </Modal>
+            <div style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
+                <form>
+                    <label htmlFor="freeform">Speak to your Virtual Assistance</label>
+                    <br />
+                    <textarea id="freeform" name="freeform" rows="4" cols="50">
+                        Enter text here...
+                    </textarea>
+                    <br />
+                    <br />
+                    <input type="submit" value="Submit" />
+                </form>
+            </div>
         </View>
     );
 };
