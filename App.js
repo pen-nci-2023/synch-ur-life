@@ -184,6 +184,9 @@ const App = () => {
                     <br />
                     <input type="submit" value="Submit" />
                 </form>
+                <div className="va-dialog-output">
+                    {/* This div is where the response from the AI agent will be output */}
+                </div>
             </div>
         </View>
     );
