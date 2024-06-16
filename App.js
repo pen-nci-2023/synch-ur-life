@@ -81,26 +81,26 @@ const App = () => {
 
     // Function to handle form submission to Dialogflow
     const handleSubmit = async (e) => {
-        e.preventDefault();
-        try {
-            const response = await fetch('https://strong-mature-tick.ngrok-free.app/webhook', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    queryResult: {
-                        queryText: userInput
-                    }
-                })
-            });
-            const data = await response.json();
-            setDialogflowResponse(data.fulfillmentText);
-        } catch (error) {
-            console.error('Error:', error);
-        }
+      e.preventDefault();
+      try {
+          const response = await fetch('https://strong-mature-tick.ngrok-free.app/webhook', {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({
+                  queryResult: {
+                      queryText: userInput
+                  }
+              })
+          });
+          const data = await response.json();
+          setDialogflowResponse(data.fulfillmentText);
+      } catch (error) {
+          console.error('Error:', error);
+      }
     };
-
+  
     // Debug function for testing
     const debugTest = () => {
         console.log('Tasks:', tasks);
