@@ -1,10 +1,11 @@
 // App.js
 console.log("START: App.js [x4]"); // Logging the start of the App component execution
+
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, Pressable, Modal, TextInput, Platform } from 'react-native';
 import { db } from './firebaseConfig';
 import { collection, onSnapshot, addDoc, deleteDoc, doc, updateDoc } from 'firebase/firestore';
-import DatePicker from '@react-native-community/datetimepicker'; // Note: This is not supported on web
+import DatePicker from '@react-native-community/datetimepicker';  // Note: This is not supported on web
 import Calendar from './Calendar';  // Ensure the Calendar component is properly set up
 
 // Main App component
@@ -17,67 +18,94 @@ const App = () => {
     const [endDate, setEndDate] = useState(new Date());
     const [tags, setTags] = useState('');
     const [showDatePicker, setShowDatePicker] = useState({ start: false, end: false });
-    const [currentDate, setCurrentDate] = useState(new Date());  // Manage the current date for the calendar
+    const [currentDate, setCurrentDate] = useState(new Date()); // Manage the current date for the calendar
+    const [dialogflowResponse, setDialogflowResponse] = useState(''); // State for Dialogflow response
+    const [userInput, setUserInput] = useState(''); // State for user input
 
-    // Navigate to the previous month
+    // Navigation functions for the calendar
     const goToPreviousMonth = () => {
-        console.log("Going to previous month from", currentDate);
         setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1));
     };
 
     // Navigate to the next month
     const goToNextMonth = () => {
-        console.log("Going to next month from", currentDate);
         setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1));
     };
 
-    // Reference to Firestore collection
+    // Firestore reference for tasks collection
     const tasksCollectionRef = collection(db, 'tasks');
 
-    // Effect hook to listen to Firestore updates
+    // Fetch tasks from Firestore in real-time
     useEffect(() => {
         const unsubscribe = onSnapshot(tasksCollectionRef, (querySnapshot) => {
             const tasksData = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
             setTasks(tasksData);
         });
-        return () => unsubscribe();  // Cleanup subscription on component unmount
+        return () => unsubscribe(); // Cleanup subscription on component unmount
     }, []);
 
     // Debugging current date changes
     useEffect(() => {
-        console.log("Calendar updated with new date:", currentDate);
+      console.log("Calendar updated with new date:", currentDate);
     }, [currentDate]);
 
-    // Function to handle adding a new task
+// Function to add a new task to Firestore
     const handleAddTask = async (taskDetails) => {
         await addDoc(tasksCollectionRef, taskDetails);
     };
 
-    // Function to handle deleting a task
+    // Function to delete a task from Firestore
     const handleDeleteTask = async (id) => {
         const taskDoc = doc(db, 'tasks', id);
         await deleteDoc(taskDoc);
     };
 
-    // Function to handle updating a task
+    // Function to update an existing task in Firestore
     const handleUpdateTask = async (taskId, taskDetails) => {
-        const taskDoc = doc(db, 'tasks', taskId);
+        const taskDoc = doc(db, 'tasks', taskId);  
         try {
-            await updateDoc(taskDoc, taskDetails);
-            console.log('Task updated successfully'); // Logging success
-        } catch (error) {
-            console.error('Error updating task:', error); // Logging errors
-        }
-    };
+          await updateDoc(taskDoc, taskDetails);
+          console.log('Task updated successfully'); // Logging success
+      } catch (error) {
+          console.error('Error updating task:', error); // Logging errors
+      }
+  };
 
-    // Function to confirm and handle modal submission
+
+    // Function to confirm adding a new task
     const handleConfirm = () => {
         const taskDetails = { description, startDate, endDate, tags };
         handleAddTask(taskDetails);
         setIsModalVisible(false);
     };
 
-    // Main component rendering
+    // Function to handle form submission to Dialogflow
+    const handleSubmit = async (e) => {
+      e.preventDefault();
+      try {
+          const response = await fetch('https://strong-mature-tick.ngrok-free.app/webhook', {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({
+                  queryResult: {
+                      queryText: userInput
+                  }
+              })
+          });
+          const data = await response.json();
+          setDialogflowResponse(data.fulfillmentText);
+      } catch (error) {
+          console.error('Error:', error);
+      }
+    };
+  
+    // Debug function for testing
+    const debugTest = () => {
+        console.log('Tasks:', tasks);
+    };
+
     return (
         <View style={styles.appContainer}>
             <Text style={styles.appTitle}>Sync-Ur-Life</Text>
@@ -136,8 +164,8 @@ const App = () => {
                         <Pressable onPress={() => setShowDatePicker({...showDatePicker, end: true})} style={styles.button}>
                             <Text>Select End Date</Text>
                         </Pressable>
-                        {/* Conditional rendering for End Date Picker based on platform */}
-                        {showDatePicker.end && (
+                         {/* Conditional rendering for End Date Picker based on platform */}
+                         {showDatePicker.end && (
                             Platform.OS !== 'web' ? (
                                 <DatePicker
                                     value={endDate}
@@ -174,72 +202,84 @@ const App = () => {
                 </View>
             </Modal>
             <div className="va-dialog" style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
-                <form>
+                <form onSubmit={handleSubmit}>
                     <label htmlFor="freeform">Speak to your Virtual Assistance</label>
                     <br />
-                    <textarea id="freeform" name="freeform" rows="4" cols="50">
-                        Enter text here...
+                    <textarea
+                        className="freeform"
+                        name="freeform"
+                        rows="4"
+                        cols="50"
+                        value={userInput}
+                        onChange={(e) => setUserInput(e.target.value)}
+                    >
                     </textarea>
                     <br />
                     <br />
                     <input type="submit" value="Submit" />
                 </form>
-                <div className="va-dialog-output">
+                <div className="va-dialog-output" style={{ marginTop: '20px' }}>
                     {/* This div is where the response from the AI agent will be output */}
+                    <p>{dialogflowResponse}</p>
                 </div>
             </div>
         </View>
     );
 };
 
-// Styles for the components
 const styles = StyleSheet.create({
     appContainer: {
         flex: 1,
-        justifyContent: 'center',
+        backgroundColor: '#fff',
         alignItems: 'center',
+        justifyContent: 'center',
+        padding: 20,
     },
     appTitle: {
         fontSize: 24,
         fontWeight: 'bold',
+        marginBottom: 20,
     },
     navigationContainer: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        marginTop: 20,
+        width: '80%',
+        marginBottom: 20,
     },
     navButton: {
-        backgroundColor: '#007bff',
         padding: 10,
-        borderRadius: 5,
-        marginHorizontal: 10,
-    },
-    task: {
-        marginBottom: 5,
-        flexDirection: 'row',
-        alignItems: 'center',
-        backgroundColor: '#f8f8f8',
-        padding: 10,
-        borderRadius: 5,
-    },
-    button: {
-        marginLeft: 10,
-        backgroundColor: '#007bff',
-        padding: 10,
+        backgroundColor: '#ccc',
         borderRadius: 5,
     },
     addButton: {
-        marginTop: 20,
-        backgroundColor: '#007bff',
         padding: 10,
+        backgroundColor: '#28a745',
         borderRadius: 5,
+        marginBottom: 20,
+    },
+    task: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        width: '80%',
+        padding: 10,
+        borderBottomWidth: 1,
+        borderBottomColor: '#ccc',
+        marginBottom: 10,
+    },
+    button: {
+        padding: 10,
+        backgroundColor: '#007bff',
+        borderRadius: 5,
+        marginLeft: 10,
     },
     input: {
-        height: 40,
-        margin: 12,
         borderWidth: 1,
+        borderColor: '#ccc',
         padding: 10,
         width: '100%',
+        marginBottom: 10,
+        borderRadius: 5,
     },
     modalView: {
         margin: 20,
