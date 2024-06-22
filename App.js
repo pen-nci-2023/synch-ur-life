@@ -1,5 +1,6 @@
 // REPO: synch-ur-life
 // App.js
+
 console.log("START: App.js [x4]"); // Logging the start of the App component execution
 
 import React, { useState, useEffect } from 'react';
@@ -37,7 +38,7 @@ const App = () => {
     // Fetch tasks from Firestore in real-time
     useEffect(() => {
         const unsubscribe = onSnapshot(tasksCollectionRef, (querySnapshot) => {
-            const tasksData = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            const tasksData = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })); 
             setTasks(tasksData);
         });
         return () => unsubscribe(); // Cleanup subscription on component unmount
@@ -45,7 +46,7 @@ const App = () => {
 
     // Debugging current date changes
     useEffect(() => {
-      console.log("Calendar updated with new date:", currentDate);
+        console.log("Calendar updated with new date:", currentDate);
     }, [currentDate]);
 
     // Function to add a new task to Firestore
@@ -61,14 +62,14 @@ const App = () => {
 
     // Function to update an existing task in Firestore
     const handleUpdateTask = async (taskId, taskDetails) => {
-          const taskDoc = doc(db, 'tasks', taskId);  
-          try {
-          await updateDoc(taskDoc, taskDetails);
-          console.log('Task updated successfully'); // Logging success
-      } catch (error) {
-          console.error('Error updating task:', error); // Logging errors
-      }
-  };
+        const taskDoc = doc(db, 'tasks', taskId);
+        try {
+            await updateDoc(taskDoc, taskDetails);
+            console.log('Task updated successfully'); // Logging success
+        } catch (error) {
+            console.error('Error updating task:', error); // Logging errors
+        }
+    };
 
     // Function to confirm adding a new task
     const handleConfirm = () => {
@@ -79,29 +80,29 @@ const App = () => {
 
     // Function to handle form submission to Dialogflow
     const handleSubmit = async (e) => {
-      e.preventDefault();
-      try {
-          const response = await fetch('https://strong-mature-tick.ngrok-free.app/webhook', {
-              method: 'POST',
-              headers: {
-                  'Content-Type': 'application/json'
-              },
-              body: JSON.stringify({
-                  queryResult: {
-                      parameters: {
-                          date: userInput
-                      },
-                      queryText: userInput
-                  }
-              })
-          });
-          const data = await response.json();
-          setDialogflowResponse(data.fulfillmentText);
-      } catch (error) {
-          console.error('Error:', error);
-      }
+        e.preventDefault();
+        try {
+            const response = await fetch('https://strong-mature-tick.ngrok-free.app/webhook', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    queryResult: {
+                        parameters: {
+                            date: userInput
+                        },
+                        queryText: userInput
+                    }
+                })
+            });
+            const data = await response.json();
+            setDialogflowResponse(data.fulfillmentText);
+        } catch (error) {
+            console.error('Error:', error);
+        }
     };
-  
+
     // Debug function for testing
     const debugTest = () => {
         console.log('Tasks:', tasks);
@@ -144,18 +145,18 @@ const App = () => {
                             onChangeText={setDescription}
                             style={styles.input}
                         />
-                        <Pressable onPress={() => setShowDatePicker({...showDatePicker, start: true})} style={styles.button}>
+                        <Pressable onPress={() => setShowDatePicker({ ...showDatePicker, start: true })} style={styles.button}>
                             <Text>Select Start Date</Text>
                         </Pressable>
-                         {/* Conditional rendering for Start Date Picker based on platform */}
-                         {showDatePicker.start && (
+                        {/* Conditional rendering for Start Date Picker based on platform */}
+                        {showDatePicker.start && (
                             Platform.OS !== 'web' ? (
                                 <DatePicker
                                     value={startDate}
                                     mode="date"
                                     display="default"
                                     onChange={(event, selectedDate) => {
-                                        setShowDatePicker({...showDatePicker, start: false});
+                                        setShowDatePicker({ ...showDatePicker, start: false });
                                         setStartDate(selectedDate || startDate);
                                     }}
                                 />
@@ -167,18 +168,18 @@ const App = () => {
                                 />
                             )
                         )}
-                        <Pressable onPress={() => setShowDatePicker({...showDatePicker, end: true})} style={styles.button}>
+                        <Pressable onPress={() => setShowDatePicker({ ...showDatePicker, end: true })} style={styles.button}>
                             <Text>Select End Date</Text>
                         </Pressable>
-                         {/* Conditional rendering for End Date Picker based on platform */}
-                         {showDatePicker.end && (
+                        {/* Conditional rendering for End Date Picker based on platform */}
+                        {showDatePicker.end && (
                             Platform.OS !== 'web' ? (
                                 <DatePicker
                                     value={endDate}
                                     mode="date"
                                     display="default"
                                     onChange={(event, selectedDate) => {
-                                        setShowDatePicker({...showDatePicker, end: false});
+                                        setShowDatePicker({ ...showDatePicker, end: false });
                                         setEndDate(selectedDate || endDate);
                                     }}
                                 />
