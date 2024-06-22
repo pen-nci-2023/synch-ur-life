@@ -1,3 +1,4 @@
+// REPO: synch-ur-life
 // App.js
 console.log("START: App.js [x4]"); // Logging the start of the App component execution
 
@@ -10,10 +11,9 @@ import Calendar from './Calendar';  // Ensure the Calendar component is properly
 
 // Main App component
 const App = () => {
-    // State hooks for task management, modal visibility, and calendar navigation
     const [tasks, setTasks] = useState([]);
-    const [isModalVisible, setIsModalVisible] = useState(false);
     const [description, setDescription] = useState('');
+    const [isModalVisible, setIsModalVisible] = useState(false);
     const [startDate, setStartDate] = useState(new Date());
     const [endDate, setEndDate] = useState(new Date());
     const [tags, setTags] = useState('');
@@ -27,7 +27,6 @@ const App = () => {
         setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1));
     };
 
-    // Navigate to the next month
     const goToNextMonth = () => {
         setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1));
     };
@@ -49,7 +48,7 @@ const App = () => {
       console.log("Calendar updated with new date:", currentDate);
     }, [currentDate]);
 
-// Function to add a new task to Firestore
+    // Function to add a new task to Firestore
     const handleAddTask = async (taskDetails) => {
         await addDoc(tasksCollectionRef, taskDetails);
     };
@@ -62,15 +61,14 @@ const App = () => {
 
     // Function to update an existing task in Firestore
     const handleUpdateTask = async (taskId, taskDetails) => {
-        const taskDoc = doc(db, 'tasks', taskId);  
-        try {
+          const taskDoc = doc(db, 'tasks', taskId);  
+          try {
           await updateDoc(taskDoc, taskDetails);
           console.log('Task updated successfully'); // Logging success
       } catch (error) {
           console.error('Error updating task:', error); // Logging errors
       }
   };
-
 
     // Function to confirm adding a new task
     const handleConfirm = () => {
@@ -90,6 +88,9 @@ const App = () => {
               },
               body: JSON.stringify({
                   queryResult: {
+                      parameters: {
+                          date: userInput
+                      },
                       queryText: userInput
                   }
               })
@@ -109,7 +110,6 @@ const App = () => {
     return (
         <View style={styles.appContainer}>
             <Text style={styles.appTitle}>Sync-Ur-Life</Text>
-            <Calendar currentDate={currentDate} />
             <View style={styles.navigationContainer}>
                 <Pressable onPress={goToPreviousMonth} style={styles.navButton}>
                     <Text>Previous Month</Text>
@@ -118,6 +118,7 @@ const App = () => {
                     <Text>Next Month</Text>
                 </Pressable>
             </View>
+            <Calendar currentDate={currentDate} tasks={tasks} />
             <Pressable onPress={() => setIsModalVisible(true)} style={styles.addButton}>
                 <Text>Add Task</Text>
             </Pressable>
@@ -138,28 +139,33 @@ const App = () => {
                 <View style={styles.centeredView}>
                     <View style={styles.modalView}>
                         <TextInput
-                            style={styles.input}
-                            onChangeText={setDescription}
+                            placeholder="Description"
                             value={description}
-                            placeholder="Enter task description"
+                            onChangeText={setDescription}
+                            style={styles.input}
                         />
-                        {/* Conditional rendering for Start Date Picker based on platform */}
-                        {Platform.OS !== 'web' ? (
-                            <DatePicker
-                                value={startDate}
-                                mode="date"
-                                display="default"
-                                onChange={(event, selectedDate) => {
-                                    setShowDatePicker({...showDatePicker, start: false});
-                                    setStartDate(selectedDate || startDate);
-                                }}
-                            />
-                        ) : (
-                            <input // Fallback for web using standard HTML input for start date
-                                type="date"
-                                value={startDate.toISOString().substring(0, 10)}
-                                onChange={(event) => setStartDate(new Date(event.target.value))}
-                            />
+                        <Pressable onPress={() => setShowDatePicker({...showDatePicker, start: true})} style={styles.button}>
+                            <Text>Select Start Date</Text>
+                        </Pressable>
+                         {/* Conditional rendering for Start Date Picker based on platform */}
+                         {showDatePicker.start && (
+                            Platform.OS !== 'web' ? (
+                                <DatePicker
+                                    value={startDate}
+                                    mode="date"
+                                    display="default"
+                                    onChange={(event, selectedDate) => {
+                                        setShowDatePicker({...showDatePicker, start: false});
+                                        setStartDate(selectedDate || startDate);
+                                    }}
+                                />
+                            ) : (
+                                <input
+                                    type="date"
+                                    value={startDate.toISOString().substr(0, 10)}
+                                    onChange={(e) => setStartDate(new Date(e.target.value))}
+                                />
+                            )
                         )}
                         <Pressable onPress={() => setShowDatePicker({...showDatePicker, end: true})} style={styles.button}>
                             <Text>Select End Date</Text>
@@ -177,27 +183,22 @@ const App = () => {
                                     }}
                                 />
                             ) : (
-                                <input // Fallback for web using standard HTML input for end date
+                                <input
                                     type="date"
-                                    value={endDate.toISOString().substring(0, 10)}
-                                    onChange={(event) => setEndDate(new Date(event.target.value))}
+                                    value={endDate.toISOString().substr(0, 10)}
+                                    onChange={(e) => setEndDate(new Date(e.target.value))}
                                 />
                             )
                         )}
                         <TextInput
-                            style={styles.input}
-                            onChangeText={setTags}
+                            placeholder="Tags"
                             value={tags}
-                            placeholder="Enter tags, separated by commas"
+                            onChangeText={setTags}
+                            style={styles.input}
                         />
-                        <View style={styles.modalButtons}>
-                            <Pressable onPress={() => setIsModalVisible(false)} style={styles.button}>
-                                <Text>Cancel</Text>
-                            </Pressable>
-                            <Pressable onPress={handleConfirm} style={styles.button}>
-                                <Text>OK</Text>
-                            </Pressable>
-                        </View>
+                        <Pressable onPress={handleConfirm} style={styles.button}>
+                            <Text>Confirm</Text>
+                        </Pressable>
                     </View>
                 </View>
             </Modal>
@@ -227,6 +228,7 @@ const App = () => {
     );
 };
 
+// Styles for the components
 const styles = StyleSheet.create({
     appContainer: {
         flex: 1,
@@ -287,13 +289,13 @@ const styles = StyleSheet.create({
         borderRadius: 20,
         padding: 35,
         alignItems: 'center',
-        shadowColor: "#000",
+        shadowColor: '#000',
         shadowOffset: {
             width: 0,
-            height: 2
+            height: 2,
         },
         shadowOpacity: 0.25,
-        shadowRadius: 3.84,
+        shadowRadius: 4,
         elevation: 5,
     },
     centeredView: {
@@ -302,13 +304,6 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         marginTop: 22,
     },
-    modalButtons: {
-        flexDirection: 'row',
-        justifyContent: 'space-around',
-        marginTop: 15,
-    },
 });
 
-export default App; // Export the App component as the default
-
-console.log("END: App.js [x4]"); // Logging the end of the App component execution
+export default App;

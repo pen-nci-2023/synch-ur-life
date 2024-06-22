@@ -1,17 +1,16 @@
 // REPO: synch-ur-life
 // Calendar.js
 
-import { getCurrentDateTime} from './Utilities';
+import { getCurrentDateTime } from './Utilities';
 
-console.log("START: Calendar.js [x1] ", getCurrentDateTime()) ;
-
+console.log("START: Calendar.js [x1] ", getCurrentDateTime());
 
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, Pressable } from 'react-native';
 
 const Calendar = ({ currentDate, onDateSelect }) => {
   const [calendarDays, setCalendarDays] = useState([]);
-  
+
   // Extract year and month from currentDate
   const year = currentDate.getFullYear();
   const month = currentDate.getMonth() + 1;  // +1 because JavaScript months are 0-indexed
@@ -19,7 +18,7 @@ const Calendar = ({ currentDate, onDateSelect }) => {
   // Calculate days for the calendar
   useEffect(() => {
     console.log("Updating calendar for:", year, month);
-    
+
     const daysInMonth = new Date(year, month, 0).getDate();
     const firstDayOfWeek = new Date(year, month - 1, 1).getDay();
     let daysArray = [];
@@ -100,4 +99,4 @@ const styles = StyleSheet.create({
 
 export default Calendar;
 
-console.log("END: Calendar.js [x2]") ;
+console.log("END: Calendar.js [x2]");
