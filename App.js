@@ -14,7 +14,7 @@ function App() {
       },
       body: JSON.stringify({
         queryResult: {
-          parameters: { date: input },
+          parameters: { test_param: input },
           queryText: input,
         },
       }),
